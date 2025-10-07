@@ -7,6 +7,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @ToString
@@ -32,5 +33,10 @@ public class PremiosEntity {
     private String resultado;
     @Column(name = "FECHA_REGISTRO")
     private Date fechaRegistro;
+
+    @OneToMany(mappedBy = "PELICULA", cascade = CascadeType.ALL)
+    private List<PremiosEntity> premios;
+
+
 
 }

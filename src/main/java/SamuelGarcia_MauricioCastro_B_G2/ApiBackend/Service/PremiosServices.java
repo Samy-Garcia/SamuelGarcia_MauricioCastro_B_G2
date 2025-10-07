@@ -61,7 +61,7 @@ public class PremiosServices {
         return ConvertirAPremiosDTO(PremioActualizado);
     }
 
-    public boolean (Long id){
+    public PremiosDTO boolean (Long id){
         try {
             PremiosEntity objEntity = repo.findById(id).orElse(null);
 
