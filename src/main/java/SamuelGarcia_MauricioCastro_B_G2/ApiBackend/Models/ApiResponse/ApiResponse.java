@@ -1,5 +1,8 @@
 package SamuelGarcia_MauricioCastro_B_G2.ApiBackend.Models.ApiResponse;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.time.LocalDateTime;
 
 @Getter

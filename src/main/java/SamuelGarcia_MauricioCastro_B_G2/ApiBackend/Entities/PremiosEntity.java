@@ -20,8 +20,8 @@ public class PremiosEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_premios")
     @SequenceGenerator(name = "seq_premios", sequenceName =  "seq_premios", allocationSize = 1)
-    @Column(name = "IDPREMIOS")
-    private Long id;
+    @Column(name = "ID_PREMIO")
+    private Long idPremio;
 
     @Column(name = "NOMBRE_PREMIO")
     private String nombrePremio;
@@ -33,10 +33,6 @@ public class PremiosEntity {
     private String resultado;
     @Column(name = "FECHA_REGISTRO")
     private Date fechaRegistro;
-
-    @OneToMany(mappedBy = "PELICULA", cascade = CascadeType.ALL)
-    private List<PremiosEntity> premios;
-
 
 
 }

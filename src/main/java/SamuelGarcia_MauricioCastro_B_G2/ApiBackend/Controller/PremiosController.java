@@ -1,15 +1,15 @@
 package SamuelGarcia_MauricioCastro_B_G2.ApiBackend.Controller;
 
-import SamuelGarcia_MauricioCastro_B_G2.ApiBackend.Exception.ExceptioPremioDuplicado;
 import SamuelGarcia_MauricioCastro_B_G2.ApiBackend.Exception.ExceptionPremioNoEncontrado;
 import SamuelGarcia_MauricioCastro_B_G2.ApiBackend.Exception.ExceptiosDatosNoIngresados;
+import SamuelGarcia_MauricioCastro_B_G2.ApiBackend.Models.ApiResponse.ApiResponse;
 import SamuelGarcia_MauricioCastro_B_G2.ApiBackend.Models.DTO.PremiosDTO;
 import SamuelGarcia_MauricioCastro_B_G2.ApiBackend.Service.PremiosServices;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
@@ -25,9 +25,9 @@ public class PremiosController {
     PremiosServices acceso;
 
     @GetMapping("/GetPremios")
-    private ResponseEntity<List<PremiosDTO>> getData(){
+    private ResponseEntity<List<PremiosDTO>> getData() {
         List<PremiosDTO> premio = acceso.ObtenerTodo();
-        if (premio == null){
+        if (premio == null) {
             ResponseEntity.badRequest().body(Map.of(
                     "status", "No hay categorias registradas"
             ));
@@ -36,47 +36,52 @@ public class PremiosController {
     }
 
     @PostMapping("/PostPremios")
-    public ResponseEntity<ApiResponse<PremiosDTO>> insertarActor(@Valid @RequestBody PremiosDTO json){
-        if (json == null){
+    public ResponseEntity<ApiResponse<PremiosDTO>> insertarActor(@Valid @RequestBody PremiosDTO json) {
+        if (json == null) {
             throw new ExceptiosDatosNoIngresados("Error al recibir y procesar la información del usuario");
         }
         PremiosDTO usuarioGuardado = acceso.createActor(json);
-        if (usuarioGuardado == null){
+        if (usuarioGuardado == null) {
             throw new ExceptiosDatosNoIngresados("El usuario no pudo ser registrado debido a algun inconveniente con los datos");
         }
         return ResponseEntity.ok(ApiResponse.success("Usuario registrado exitosamente", usuarioGuardado));
     }
 
-        @PutMapping("/PutPremios")
-        public ResponseEntity<?> modificarUsuario (
-                @PathVariable Long id,
-                @Valid @RequestBody CategoryDTO usuario,
-                BindingResult bindingResult){
-            if (bindingResult.hasErrors()) {
-                Map<String, String> errores = new HashMap<>();
-                bindingResult.getFieldErrors().forEach(error ->
-                        errores.put(error.getField(), error.getDefaultMessage()));
-                return ResponseEntity.badRequest().body(errores);
-            }
+    @PutMapping("/PutPremios")
+    public ResponseEntity<?> editarEmpresa(
+            @PathVariable Long id, //Extraer el id que va en la URL
+            @Valid @RequestBody PremiosDTO json,
+            BindingResult bindingResult //Contiene los resultados de la validacion @Valid
 
-            try {
-                PremiosDTO PremioActualizado = acceso.actualizarDatos(id, premio);
-                return ResponseEntity.ok(PremioActualizado);
-            } catch (ExceptionPremioNoEncontrado e) {
-                return ResponseEntity.notFound().build();
-            } catch (ExceptioPremioDuplicado e) {
-                return ResponseEntity.status(HttpStatus.CONFLICT).body(
-                        Map.of("error", "Datos duplicados", "campo", e.getColumnDuplicate())
-                );
-            }
+    ){
+        //1. Vereficar si hay errores de validacion con BindingResult
+        if(bindingResult.hasErrors()) {
+            //2. Crear un mapa de errores (campo-> mensaje
+            Map<String, String> errores = new HashMap<>();
+            //3. Interar sobre cada error y lo agrega al objeto Map
+            bindingResult.getFieldErrors().forEach(error -> errores.put(error.getField(), error.getDefaultMessage()));
+            //4. Retornar error HTTP 400 (Bad Request con los errores de validacion
+            return ResponseEntity.badRequest().body(errores);
         }
 
-        @DeleteMapping("/DeletePremios")
+        try {
+            // Intentar actualizar la empresa llamando al servicio
+            PremiosDTO dto = acceso.actualizarDatos(id, json);
+            return ResponseEntity.ok(dto);
+
+        } catch (ExceptionPremioNoEncontrado e) {
+            return ResponseEntity.notFound().build();
+
+        }
+    }
+
+
+    @DeleteMapping("/DeletePremios")
         public ResponseEntity<Map<String, Object>> eliminarUsuario (@PathVariable Long id){
             try {
                 // Intenta eliminar la categoria usando objeto 'service'
                 // Si el metodo delete retorna false (no encontró la categoria)
-                if (!service.delete(id)) {
+                if (!acceso.deleteActor(id)) {
                     // Retorna una respuesta 404 (Not Found) con información detallada
                     return ResponseEntity.status(HttpStatus.NOT_FOUND)
                             // Agrega un header personalizado
@@ -106,4 +111,4 @@ public class PremiosController {
         }
 
     }
-}
+

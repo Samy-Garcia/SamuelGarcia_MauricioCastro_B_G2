@@ -37,16 +37,13 @@ public class PremiosServices {
     public  PremiosDTO createActor(@Valid PremiosDTO json) {
         PremiosEntity objEntity = ConvertirAEntity(json);
         PremiosEntity savedUser = repo.save(objEntity);
-        return ConvertirADTO(savedUser);
+        return ConvertirAPremiosDTO(savedUser);
     }
 
     public PremiosDTO actualizarDatos(Long id,@Valid PremiosDTO json){
         PremiosEntity PremioExistente = repo.findById(id).orElseThrow(()-> new ExceptionPremioNoEncontrado("No se ha Encontrado ese Premio"));
-
         PremioExistente = ConvertirAEntity(json);
-
         PremiosEntity PremioActualizado = repo.save(PremioExistente);
-
         return ConvertirAPremiosDTO(PremioActualizado);
     }
 
@@ -63,7 +60,7 @@ public class PremiosServices {
     public PremiosDTO ConvertirAPremiosDTO(PremiosEntity entity){
         PremiosDTO dto = new PremiosDTO();
 
-        dto.setIdPremios(entity.getId());
+        dto.setIdPremio(entity.getIdPremio());
         dto.setNombrePremio(entity.getNombrePremio());
         dto.setCategoria(entity.getCategoria());
         dto.setAnoPremio(entity.getAnoPremio());

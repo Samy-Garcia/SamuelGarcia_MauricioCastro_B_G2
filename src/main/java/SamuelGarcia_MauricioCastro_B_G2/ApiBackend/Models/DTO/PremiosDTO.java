@@ -13,7 +13,7 @@ import java.util.Date;
 @Setter
 public class PremiosDTO {
 
-    private Long idPremios;
+    private Long idPremio;
     private Long idPelicula;
     private String nombrePremio;
     private String categoria;
