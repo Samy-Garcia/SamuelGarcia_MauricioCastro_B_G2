@@ -34,21 +34,10 @@ public class PremiosServices {
                 .collect(Collectors.toList());
     }
 
-    public PremiosDTO insertarDatos(@Valid PremiosDTO json){
-        if (json == null || json.getNombrePremio() == null || json.getNombrePremio().isEmpty()){
-
-            throw  new IllegalArgumentException("Datos no Ingresados");
-
-        }
-        try {
-            PremiosEntity entity = ConvertirAEntity(json);
-            PremiosEntity respuesta = repo.save(entity);
-
-            return ConvertirAPremiosDTO(respuesta);
-        }catch (Exception e){
-            Log error ("Error al Insertar Datos" + e.getMessage());
-            throw new ExceptiosDatosNoIngresados("Datos No Ingresados");
-        }
+    public  PremiosDTO createActor(@Valid PremiosDTO json) {
+        PremiosEntity objEntity = ConvertirAEntity(json);
+        PremiosEntity savedUser = repo.save(objEntity);
+        return ConvertirADTO(savedUser);
     }
 
     public PremiosDTO actualizarDatos(Long id,@Valid PremiosDTO json){
@@ -61,16 +50,14 @@ public class PremiosServices {
         return ConvertirAPremiosDTO(PremioActualizado);
     }
 
-    public PremiosDTO boolean (Long id){
-        try {
-            PremiosEntity objEntity = repo.findById(id).orElse(null);
-
-            if (objEntity != null){
-                return true;
-            }
+    public boolean deleteActor(Long id) {
+        PremiosEntity existente = repo.findById(id).orElse(null);
+        if (existente!=null){
+            repo.deleteById(id);
+            return true;
+        }else {
+            log.error("Premio no encontrado");
             return false;
-        }catch (EmptyResultDataAccessException e){
-            throw new EmptyResultDataAccessException("No se Encontro premio con ID:" + id , 1);
         }
     }
     public PremiosDTO ConvertirAPremiosDTO(PremiosEntity entity){
