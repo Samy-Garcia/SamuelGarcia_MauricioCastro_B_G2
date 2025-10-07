@@ -3,6 +3,7 @@ package SamuelGarcia_MauricioCastro_B_G2.ApiBackend.Service;
 import SamuelGarcia_MauricioCastro_B_G2.ApiBackend.Entities.PremiosEntity;
 import SamuelGarcia_MauricioCastro_B_G2.ApiBackend.Exception.ExceptionPremioNoEncontrado;
 import SamuelGarcia_MauricioCastro_B_G2.ApiBackend.Exception.ExceptiosDatosNoIngresados;
+import SamuelGarcia_MauricioCastro_B_G2.ApiBackend.Models.DTO.PeliculasDTO;
 import SamuelGarcia_MauricioCastro_B_G2.ApiBackend.Models.DTO.PremiosDTO;
 import SamuelGarcia_MauricioCastro_B_G2.ApiBackend.Repositories.PremioRepository;
 import jakarta.validation.Valid;
@@ -57,9 +58,9 @@ public class PremiosServices {
             return false;
         }
     }
+
     public PremiosDTO ConvertirAPremiosDTO(PremiosEntity entity){
         PremiosDTO dto = new PremiosDTO();
-
         dto.setIdPremio(entity.getIdPremio());
         dto.setNombrePremio(entity.getNombrePremio());
         dto.setCategoria(entity.getCategoria());
@@ -71,7 +72,6 @@ public class PremiosServices {
     }
     private PremiosEntity ConvertirAEntity(@Valid PremiosDTO json){
         PremiosEntity entity = new PremiosEntity();
-
         entity.setNombrePremio(json.getNombrePremio());
         entity.setCategoria(json.getCategoria());
         entity.setAnoPremio(json.getAnoPremio());

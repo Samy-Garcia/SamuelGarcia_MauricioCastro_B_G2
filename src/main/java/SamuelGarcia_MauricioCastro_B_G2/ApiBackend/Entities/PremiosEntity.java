@@ -34,5 +34,7 @@ public class PremiosEntity {
     @Column(name = "FECHA_REGISTRO")
     private Date fechaRegistro;
 
-
+    @ManyToOne
+    @JoinColumn(name = "ID_PELICULA", referencedColumnName = "ID_PELICULA")
+    private PeliculaEntity pelicula;
 }
